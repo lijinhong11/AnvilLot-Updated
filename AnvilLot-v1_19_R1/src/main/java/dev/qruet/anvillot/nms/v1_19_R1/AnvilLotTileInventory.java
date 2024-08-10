@@ -14,7 +14,7 @@ import org.bukkit.craftbukkit.v1_19_R1.block.CraftBlock;
 
 /**
  * @author lijinhong11
- * @version 3.6.0
+ * @version 3.7.0
  */
 public class AnvilLotTileInventory implements ITileInventory {
 

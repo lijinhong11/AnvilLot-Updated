@@ -7,7 +7,7 @@
     <parent>
         <artifactId>AnvilLot</artifactId>
         <groupId>dev.qruet.anvillot</groupId>
-        <version>3.6</version>
+        <version>3.7</version>
     </parent>
 
     <properties>
@@ -75,7 +75,7 @@
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
+            <artifactId>spigot</artifactId>
             <version>1.18.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
@@ -88,8 +88,8 @@
 
     <repositories>
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+            <id>codemc</id>
+            <url>https://repo.codemc.org/repository/nms/</url>
         </repository>
     </repositories>
 

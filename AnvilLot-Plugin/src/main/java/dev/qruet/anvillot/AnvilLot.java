@@ -113,7 +113,7 @@ public final class AnvilLot extends JavaPlugin {
         try {
             flag = ConfigDeserialization.init(this);
         } catch (IllegalArgumentException e) {
-            getLogger().severe(LanguageLibrary.PREFIX + "" + e.getMessage());
+            getLogger().severe(LanguageLibrary.PREFIX + e.getMessage());
             return false;
         } catch (Exception e) {
             getLogger().severe(LanguageLibrary.PREFIX + "" + LanguageLibrary.CONFIG_ERROR);

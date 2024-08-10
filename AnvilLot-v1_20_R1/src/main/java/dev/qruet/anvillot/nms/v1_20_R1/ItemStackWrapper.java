@@ -14,7 +14,7 @@ public class ItemStackWrapper implements IItemStackWrapper {
 
     @Override
     public int getRepairCost() {
-        return itemStack.H();
+        return itemStack.I();
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ItemStackWrapper implements IItemStackWrapper {
 
     @Override
     public String getName() {
-        return itemStack.x().getString();
+        return itemStack.y().getString();
     }
 
     @Override

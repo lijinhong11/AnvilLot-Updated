@@ -40,7 +40,7 @@ import java.util.List;
 /*
  *
  * @author lijinhong11
- * @version 3.6.0
+ * @version 3.7.0
  */
 public class ContainerAnvilLot extends ContainerAnvil implements IContainerAnvilLot {
 
