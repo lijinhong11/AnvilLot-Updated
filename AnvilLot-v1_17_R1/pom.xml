@@ -42,8 +42,8 @@
 
     <repositories>
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+            <id>codemc-nms</id>
+            <url>https://repo.codemc.org/repository/nms/</url>
         </repository>
     </repositories>
 </project>
