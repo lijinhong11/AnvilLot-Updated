@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -13,6 +12,7 @@ import java.util.regex.Pattern;
 public class ReflectionUtils {
 
     private static final Map<Class<?>, Class<?>> CORRESPONDING_TYPES = new HashMap<>();
+    private static final boolean isPaper = isPaper();
 
     /**
      * Legacy (versions pre 1.17)
@@ -24,7 +24,7 @@ public class ReflectionUtils {
     }
 
     private static Class<?> getPrimitiveType(Class<?> clazz) {
-        return CORRESPONDING_TYPES.containsKey(clazz) ? CORRESPONDING_TYPES.get(clazz) : clazz;
+        return CORRESPONDING_TYPES.getOrDefault(clazz, clazz);
     }
 
     private static Class<?>[] toPrimitiveTypeArray(Class<?>[] classes) {
@@ -44,15 +44,6 @@ public class ReflectionUtils {
             if (!a[i].equals(o[i]) && !a[i].isAssignableFrom(o[i]))
                 return false;
         return true;
-    }
-
-    private static Object getHandle(Object obj) {
-        try {
-            return getMethod("getHandle", obj.getClass()).invoke(obj);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     /**
@@ -115,6 +106,17 @@ public class ReflectionUtils {
      */
     public static String getVersion() {
         String name = Bukkit.getServer().getClass().getPackage().getName();
+        if (isPaper && getIntRawVersion() >= 1205) {
+            switch (getIntRawVersion()) {
+                case 1205:
+                case 1206:
+                    return "v1_20_R4";
+                case 1210:
+                case 1211:
+                    return "v1_21_R1";
+            }
+        }
+
         return name.substring(name.lastIndexOf('.') + 1);
     }
 
@@ -126,9 +128,14 @@ public class ReflectionUtils {
             strInt.append(m.group());
         }
 
+        String str = strInt.toString();
+        if (str.isEmpty()) {
+            return getIntRawVersion();
+        }
+
         int version = -1;
         try {
-            version = Integer.parseInt(strInt.toString());
+            version = Integer.parseInt(str);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -144,6 +151,11 @@ public class ReflectionUtils {
      */
     public static Class<?> getNMSClass(String className) {
         String fullName = "net.minecraft.server." + getVersion() + "." + className;
+
+        if (isPaper && getIntRawVersion() >= 1205) {
+            fullName = "net.minecraft.server." + className;
+        }
+
         Class<?> clazz = null;
         try {
             clazz = Class.forName(fullName);
@@ -151,6 +163,14 @@ public class ReflectionUtils {
             e.printStackTrace();
         }
         return clazz;
+    }
+
+    public static Class<?> getNMSClassByFullName(String className) {
+        try {
+            return Class.forName("net.minecraft." + className);
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
     }
 
     /**
@@ -161,6 +181,11 @@ public class ReflectionUtils {
      */
     public static Class<?> getCraftBukkitClass(String className) {
         String fullName = "org.bukkit.craftbukkit." + getVersion() + "." + className;
+
+        if (isPaper() && getIntRawVersion() >= 1205) {
+            fullName = "org.bukkit.craftbukkit." + className;
+        }
+
         Class<?> clazz = null;
         try {
             clazz = Class.forName(fullName);
@@ -237,4 +262,22 @@ public class ReflectionUtils {
         return equal;
     }
 
+    private static boolean isPaper() {
+        boolean isPaper = false;
+        try {
+            Class.forName("com.destroystokyo.paper.PaperConfig");
+            isPaper = true;
+        } catch (ClassNotFoundException e) {
+        }
+        return isPaper;
+    }
+
+    private static int getIntRawVersion() {
+        String mcVersion = Bukkit.getBukkitVersion().split("-")[0];
+        String rawIntStr = mcVersion.replaceAll("\\.", "");
+        if (rawIntStr.length() < 4) {
+            rawIntStr = rawIntStr + "0";
+        }
+        return Integer.parseInt(rawIntStr);
+    }
 }

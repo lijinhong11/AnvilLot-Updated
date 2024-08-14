@@ -50,7 +50,7 @@ public class VersionHandlerLegacy extends VersionHandler {
             openTileEntity = null;
 
         try {
-            container_title = ChatMessage.getConstructor(String.class, Object[].class).newInstance("Repair & Name", new Object[]{});
+            container_title = ChatMessage.getConstructor(String.class, Object[].class).newInstance("container.repair", new Object[]{});
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }

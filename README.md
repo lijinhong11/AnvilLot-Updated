@@ -8,8 +8,7 @@ Original repository: https://github.com/qruet/AnvilLot
 
 ### It allows for vanilla anvils to extend beyond the vanilla price cap of 39 experience levels in a non-intrusive way. 
 
-### Supported Minecraft Versions: 
-* **1.13.2** 
+### Supported Minecraft Versions:
 * **1.14.X**
 * **1.15.X** 
 * **1.16.4/5**

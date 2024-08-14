@@ -22,7 +22,6 @@
         <module>AnvilLot-Plugin</module>
         <module>AnvilLot-Distro</module>
 
-        <module>AnvilLot-v1_13_R2</module>
         <module>AnvilLot-v1_14_R1</module>
         <module>AnvilLot-v1_15_R1</module>
         <module>AnvilLot-v1_16_R3</module>
@@ -42,7 +41,6 @@
             <modules>
                 <module>AnvilLot-Plugin</module>
                 <module>AnvilLot-Distro</module>
-                <module>AnvilLot-v1_13_R2</module>
                 <module>AnvilLot-v1_14_R1</module>
                 <module>AnvilLot-v1_15_R1</module>
                 <module>AnvilLot-v1_16_R3</module>

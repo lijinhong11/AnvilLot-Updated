@@ -1,5 +1,6 @@
 package dev.qruet.anvillot.nms;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
@@ -19,13 +20,15 @@ public class VersionHandlerNMS extends VersionHandler {
     private static String VERSION;
     public static final int MINECRAFT_BASE_VERSION;
 
-    private static Class<?> CraftPlayer;
-
-    private static Class<?> AnvilLotTileInventory;
-
-    private static Method getHandle;
+    private static final Class<?> CraftPlayer;
+    private static final Method getHandle;
+    private static final Class<?> IChatMutableComponent;
+    private static final Class<?> ComponentContentsClass = ReflectionUtils.getNMSClassByFullName("network.chat.ComponentContents");
+    private static final Class<?> TranslatableContentsClass = ReflectionUtils.getNMSClassByFullName("network.chat.contents.TranslatableContents");
+    private static Constructor<?> TranslatableContentsConstructor;
 
     private static Method openContainer117;
+    private static Class<?> AnvilLotTileInventory;
 
     static {
         VERSION = ReflectionUtils.getVersion();
@@ -35,7 +38,12 @@ public class VersionHandlerNMS extends VersionHandler {
 
         try {
             AnvilLotTileInventory = getLocalNMSClass("AnvilLotTileInventory");
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException ignored) {
+        }
+
+        IChatMutableComponent = ReflectionUtils.getNMSClassByFullName("network.chat.IChatMutableComponent");
+        try {TranslatableContentsConstructor = TranslatableContentsClass.getDeclaredConstructor(String.class, String.class, Object[].class);
+        } catch (NoSuchMethodException ignored) {
         }
 
         getHandle = ReflectionUtils.getMethod(CraftPlayer, "getHandle");
@@ -46,8 +54,7 @@ public class VersionHandlerNMS extends VersionHandler {
     }
 
     public static Class<?> getLocalNMSClass(String className) throws ClassNotFoundException {
-        Class<?> clazz = Class.forName(VersionHandlerNMS.class.getPackage().getName() + "." + VERSION + "." + className);
-        return clazz;
+        return Class.forName(VersionHandlerNMS.class.getPackage().getName() + "." + VERSION + "." + className);
     }
 
     @Deprecated
@@ -62,7 +69,13 @@ public class VersionHandlerNMS extends VersionHandler {
             throw new UnsupportedOperationException("VersionHandler has not yet been initialized.");
         try {
             EntityPlayer eplayer = (EntityPlayer) getHandle.invoke(CraftPlayer.cast(player));
-            ITileInventory tileInventory = (ITileInventory) AnvilLotTileInventory.getConstructor(Block.class, IChatBaseComponent.class).newInstance(block, new ChatMessage("Repair & Name"));
+            IChatBaseComponent title;
+            if (MINECRAFT_BASE_VERSION > 18) {
+                title = (IChatBaseComponent) IChatMutableComponent.getMethod("a", ComponentContentsClass).invoke(null, TranslatableContentsConstructor.newInstance("container.repair", "Repair & Name", new Object[]{}));
+            } else {
+                title = new ChatMessage("container.repair");
+            }
+            ITileInventory tileInventory = (ITileInventory) AnvilLotTileInventory.getConstructor(Block.class, IChatBaseComponent.class).newInstance(block, title);
             if (MINECRAFT_BASE_VERSION > 17) {
                 eplayer.a(tileInventory);
             } else {
